@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
-const CreatePost = ({ setBlogData }) => {
+const CreatePost = ({ addPost }) => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("");
+  const [author, setAuthor] = useState("");
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
+  const totalSteps = 6;
 
-  const totalSteps = 5;
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const newErrors = {};
 
@@ -39,41 +39,43 @@ const CreatePost = ({ setBlogData }) => {
       });
     } else {
       const newPost = {
-        id: Date.now(),
         title,
         image,
-        author: "Anonymous",
+        author: author || "Anonymous",
         published_date: date,
         content,
         category,
       };
 
-      // Add new post to homepage
-      setBlogData((prevPosts) => [newPost, ...prevPosts]);
+      try {
+        await addPost(newPost);
+        Swal.fire({
+          title: "Congrats!",
+          text: "Blog Created!",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate('/');
+          }
+        });
 
-      Swal.fire({
-        title: "Congrats!",
-        text: "Blog Created!",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate('/'); // Navigate after clicking "OK"
-        }
-      });
-
-      // Reset form
-      setTitle("");
-      setImage("");
-      setContent("");
-      setDate("");
-      setCategory("");
-      setErrors({});
-      setCurrentStep(1);
+        // Reset form
+        setTitle("");
+        setImage("");
+        setContent("");
+        setDate("");
+        setAuthor("");
+        setCategory("");
+        setErrors({});
+        setCurrentStep(1);
+      } catch (error) {
+        console.error(error);
+        Swal.fire("Error", "Failed to create post", "error");
+      }
     }
   };
 
-  // Steps for pagination
   const steps = [
     { 
       label: "Title", 
@@ -87,6 +89,21 @@ const CreatePost = ({ setBlogData }) => {
             onChange={(event) => setTitle(event.target.value)}
           />
           {errors.title && <p className="text-red-500">{errors.title}</p>}
+        </>
+      )
+    },
+    { 
+      label: "Author", 
+      content: (
+        <>
+          <input 
+            type="text" 
+            placeholder="Enter Author Name" 
+            className="mt-1 p-2 border-3 border-blue-400 outline-blue-600 rounded w-full"
+            value={author} 
+            onChange={(event) => setAuthor(event.target.value)}
+          />
+          {errors.author && <p className="text-red-500">{errors.author}</p>}
         </>
       )
     },
@@ -172,7 +189,6 @@ const CreatePost = ({ setBlogData }) => {
     },
   ];
 
-  // Navigation functions
   const nextStep = () => {
     if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
   };

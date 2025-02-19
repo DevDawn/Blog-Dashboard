@@ -17,7 +17,7 @@ const Header = () => {
     // }
   return (
     <div className='flex justify-between items-center px-4 py-4 text-white bg-blue-900'>
-      <h1 className='cursor-pointer text-3xl font-bold'onClick={handleHomepage}>Logo</h1>
+      <h1 className='cursor-pointer text-3xl font-bold'onClick={handleHomepage}>Blogg</h1>
 
       {/* <p className='cursor-pointer' onClick={handleBlogDetails}>Blog Details</p> */}
 
