@@ -4,8 +4,8 @@ import { FaArrowLeft } from "react-icons/fa";
 
 const BlogDetailPage = ({ blogData }) => {
   const { id } = useParams();
-  // Compare IDs using parseInt to handle string vs. number mismatch
-  const blogPost = blogData.find((post) => parseInt(post.id) === parseInt(id));
+  // Compare IDs as strings
+  const blogPost = blogData.find((post) => String(post.id) === id);
 
   if (!blogPost) {
     return (
