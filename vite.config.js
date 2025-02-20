@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@components': '/src/components', // Ensuring the path starts with `/src` assuming the root is where your src directory is
+      '@components': '/src/components', 
       '@context': '/src/context'
     }
   }
