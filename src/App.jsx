@@ -11,7 +11,7 @@ const App = () => {
 
   // Fetch blog posts from the JSON backend on mount
   useEffect(() => {
-    fetch("http://localhost:5001/blogData")
+    fetch("http://192.168.1.81:5001/blogData")
       .then(response => response.json())
       .then(data => setBlogData(data))
       .catch(error => console.error("Error fetching blog data:", error));
@@ -20,7 +20,7 @@ const App = () => {
   // Function to add a new blog post
   const addPost = async (newPost) => {
     try {
-      const response = await fetch("http://localhost:5001/blogData", {
+      const response = await fetch("http://192.168.1.81:5001/blogData", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newPost),

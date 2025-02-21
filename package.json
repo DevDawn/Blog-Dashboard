@@ -5,7 +5,7 @@
   "description": "A blogsite using Vite and JSON Server",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"vite\" \"json-server --watch db.json --port 5001 --routes routes.json\"",
+    "dev": "concurrently \"vite\" \"json-server --watch db.json --host 192.168.1.81 --port 5001\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
