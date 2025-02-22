@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
@@ -31,7 +30,8 @@ const App = () => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .insert(newPost);
+        .insert(newPost)
+        .select(); // Add .select() to return inserted rows
       if (error) {
         throw new Error(error.message);
       }

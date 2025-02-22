@@ -1,7 +1,7 @@
-// CreatePost.js
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 const CreatePost = ({ addPost }) => {
   const [title, setTitle] = useState("");
@@ -19,18 +19,18 @@ const CreatePost = ({ addPost }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const newErrors = {};
-
+  
     if (title === "") newErrors.title = "Title is required";
     else if (title.length < 5) newErrors.title = "Title must be at least 5 characters";
     else if (title.length > 100) newErrors.title = "Title must be at most 100 characters";
-
+  
     if (content === "") newErrors.content = "Content is required";
     else if (content.length < 5) newErrors.content = "Content must be at least 5 characters";
-
+  
     if (image === "") newErrors.image = "Image is required";
     if (date === "") newErrors.date = "Date is required";
     if (category === "") newErrors.category = "Category is required";
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       Swal.fire({
@@ -39,7 +39,9 @@ const CreatePost = ({ addPost }) => {
         icon: "error",
       });
     } else {
+      // Generate a new id using uuidv4() and include it in the newPost object
       const newPost = {
+        id: uuidv4(), // This generates a unique id for the post
         title,
         image,
         author: author || "Anonymous",
@@ -47,7 +49,7 @@ const CreatePost = ({ addPost }) => {
         content,
         category,
       };
-
+  
       try {
         await addPost(newPost);
         Swal.fire({
@@ -60,7 +62,7 @@ const CreatePost = ({ addPost }) => {
             navigate('/');
           }
         });
-
+  
         // Reset form
         setTitle("");
         setImage("");
