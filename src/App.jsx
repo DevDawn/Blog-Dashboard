@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
@@ -5,34 +6,39 @@ import Homepage from './Pages/Homepage';
 import CreatePost from './Pages/CreatePost';
 import BlogDetailPage from './Pages/BlogDetailPage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { supabase } from './supabaseClient';
 
 const App = () => {
   const [blogData, setBlogData] = useState([]);
 
-  // Fetch blog posts from the JSON backend on mount
+  // Fetch blog posts from Supabase on mount
   useEffect(() => {
-    fetch("http://192.168.1.81:5001/blogData")
-      .then(response => response.json())
-      .then(data => setBlogData(data))
-      .catch(error => console.error("Error fetching blog data:", error));
+    async function loadBlogPosts() {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*');
+      if (error) {
+        console.error("Error fetching blog data:", error);
+      } else {
+        setBlogData(data);
+      }
+    }
+    loadBlogPosts();
   }, []);
 
-  // Function to add a new blog post
+  // Function to add a new blog post via Supabase
   const addPost = async (newPost) => {
     try {
-      const response = await fetch("http://192.168.1.81:5001/blogData", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to add post");
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .insert(newPost);
+      if (error) {
+        throw new Error(error.message);
       }
-      const addedPost = await response.json();
-      // Update state so the new post appears on the homepage
-      setBlogData(prevPosts => [addedPost, ...prevPosts]);
+      // data returns an array of inserted rows, so we take the first one
+      setBlogData(prevPosts => [data[0], ...prevPosts]);
     } catch (error) {
-      console.error(error);
+      console.error("Error adding post:", error);
     }
   };
 

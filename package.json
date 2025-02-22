@@ -5,12 +5,13 @@
   "description": "A blogsite using Vite and JSON Server",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"vite\" \"json-server --watch db.json --host 192.168.1.81 --port 5001\"",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.48.1",
     "@tailwindcss/vite": "^4.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
