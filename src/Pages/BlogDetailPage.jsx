@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import Comments from '../Components/Comments';
 
 const BlogDetailPage = ({ blogData }) => {
   const { id } = useParams();
@@ -30,12 +31,12 @@ const BlogDetailPage = ({ blogData }) => {
         />
 
         {/* Back icon positioned at the top left */}
-        <Link 
+        {/* <Link 
           to="/" 
           className="absolute top-4 left-4 text-white text-2xl bg-blue-600 p-2 rounded-full hover:bg-blue-800"
         >
           <FaArrowLeft />
-        </Link>
+        </Link> */}
 
         {/* Category label positioned at the top right */}
         <span className="absolute top-4 right-4 px-4 py-2 bg-blue-900 text-white rounded-full">
@@ -51,6 +52,8 @@ const BlogDetailPage = ({ blogData }) => {
       <div className="mt-6 text-lg mb-20">
         <p>{blogPost.content}</p>
       </div>
+
+      <Comments blogPostId={blogPost.id} />
     </div>
   );
 };

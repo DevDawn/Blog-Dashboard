@@ -16,66 +16,120 @@ const CreatePost = ({ addPost }) => {
   const navigate = useNavigate();
   const totalSteps = 6;
 
+  // Validate the field for the current step.
+  const validateCurrentStep = () => {
+    let fieldName = "";
+    let errorMsg = "";
+    switch (currentStep) {
+      case 1:
+        fieldName = "title";
+        if (title.trim() === "") {
+          errorMsg = "Title is required";
+        } else if (title.trim().length < 5) {
+          errorMsg = "Title must be at least 5 characters";
+        } else if (title.trim().length > 100) {
+          errorMsg = "Title must be at most 100 characters";
+        }
+        break;
+      case 2:
+        fieldName = "author";
+        if (author.trim() === "") {
+          errorMsg = "Author is required";
+        }
+        break;
+      case 3:
+        fieldName = "content";
+        if (content.trim() === "") {
+          errorMsg = "Content is required";
+        } else if (content.trim().length < 5) {
+          errorMsg = "Content must be at least 5 characters";
+        }
+        break;
+      case 4:
+        fieldName = "image";
+        if (image.trim() === "") {
+          errorMsg = "Image URL is required";
+        }
+        break;
+      case 5:
+        fieldName = "date";
+        if (date.trim() === "") {
+          errorMsg = "Date is required";
+        }
+        break;
+      case 6:
+        fieldName = "category";
+        if (category === "") {
+          errorMsg = "Category is required";
+        }
+        break;
+      default:
+        break;
+    }
+    if (errorMsg) {
+      setErrors(prevErrors => ({ ...prevErrors, [fieldName]: errorMsg }));
+      return false;
+    } else {
+      // Clear any existing error for this field.
+      setErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+      return true;
+    }
+  };
+
+  const nextStep = () => {
+    if (validateCurrentStep()) {
+      if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const newErrors = {};
-  
-    if (title === "") newErrors.title = "Title is required";
-    else if (title.length < 5) newErrors.title = "Title must be at least 5 characters";
-    else if (title.length > 100) newErrors.title = "Title must be at most 100 characters";
-  
-    if (content === "") newErrors.content = "Content is required";
-    else if (content.length < 5) newErrors.content = "Content must be at least 5 characters";
-  
-    if (image === "") newErrors.image = "Image is required";
-    if (date === "") newErrors.date = "Date is required";
-    if (category === "") newErrors.category = "Category is required";
-  
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    // Validate final step before submitting
+    if (!validateCurrentStep()) return;
+    
+    const newPost = {
+      id: uuidv4(),
+      title,
+      image,
+      author: author || "Anonymous",
+      published_date: date,
+      content,
+      category,
+    };
+
+    try {
+      await addPost(newPost);
       Swal.fire({
-        title: "Incomplete Blog Details",
-        text: "No Blog Created!",
-        icon: "error",
+        title: "Congrats!",
+        text: "Blog Created!",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/');
+        }
       });
-    } else {
-      // Generate a new id using uuidv4() and include it in the newPost object
-      const newPost = {
-        id: uuidv4(), // This generates a unique id for the post
-        title,
-        image,
-        author: author || "Anonymous",
-        published_date: date,
-        content,
-        category,
-      };
-  
-      try {
-        await addPost(newPost);
-        Swal.fire({
-          title: "Congrats!",
-          text: "Blog Created!",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate('/');
-          }
-        });
-  
-        // Reset form
-        setTitle("");
-        setImage("");
-        setContent("");
-        setDate("");
-        setAuthor("");
-        setCategory("");
-        setErrors({});
-        setCurrentStep(1);
-      } catch (error) {
-        console.error(error);
-        Swal.fire("Error", "Failed to create post", "error");
-      }
+
+      // Reset form
+      setTitle("");
+      setImage("");
+      setContent("");
+      setDate("");
+      setAuthor("");
+      setCategory("");
+      setErrors({});
+      setCurrentStep(1);
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Failed to create post", "error");
     }
   };
 
@@ -87,7 +141,7 @@ const CreatePost = ({ addPost }) => {
           <input 
             type="text" 
             placeholder="Enter Post Title" 
-            className="mt-1 p-2 border-3 border-blue-400 outline-blue-600 rounded w-full"
+            className="mt-1 p-2 border border-blue-400 outline-blue-600 rounded w-full"
             value={title} 
             onChange={(event) => setTitle(event.target.value)}
           />
@@ -102,7 +156,7 @@ const CreatePost = ({ addPost }) => {
           <input 
             type="text" 
             placeholder="Enter Author Name" 
-            className="mt-1 p-2 border-3 border-blue-400 outline-blue-600 rounded w-full"
+            className="mt-1 p-2 border border-blue-400 outline-blue-600 rounded w-full"
             value={author} 
             onChange={(event) => setAuthor(event.target.value)}
           />
@@ -116,7 +170,7 @@ const CreatePost = ({ addPost }) => {
         <>
           <textarea 
             placeholder="Enter Blog Content" 
-            className="mt-1 p-2 border-3 border-blue-400 outline-blue-600 rounded w-full"
+            className="mt-1 p-2 border border-blue-400 outline-blue-600 rounded w-full"
             value={content} 
             onChange={(event) => setContent(event.target.value)}
           />
@@ -131,7 +185,7 @@ const CreatePost = ({ addPost }) => {
           <input 
             type="url" 
             placeholder="Image URL" 
-            className="mt-1 p-2 border-3 border-blue-400 outline-blue-600 rounded w-full"
+            className="mt-1 p-2 border border-blue-400 outline-blue-600 rounded w-full"
             value={image} 
             onChange={(event) => setImage(event.target.value)}
           />
@@ -145,7 +199,7 @@ const CreatePost = ({ addPost }) => {
         <>
           <input 
             type="date" 
-            className="mt-1 p-2 border-3 border-blue-400 outline-blue-600 rounded w-full"
+            className="mt-1 p-2 border border-blue-400 outline-blue-600 rounded w-full"
             value={date} 
             onChange={(event) => setDate(event.target.value)}
           />
@@ -191,14 +245,6 @@ const CreatePost = ({ addPost }) => {
       )
     },
   ];
-
-  const nextStep = () => {
-    if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
-  };
-
-  const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
-  };
 
   return (
     <div className="bg-blue-300 px-10 py-10 rounded-xl mx-auto my-20" style={{ maxWidth: '600px' }}>
