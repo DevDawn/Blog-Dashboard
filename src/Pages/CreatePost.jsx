@@ -211,33 +211,37 @@ const CreatePost = ({ addPost }) => {
       label: "Category", 
       content: (
         <>
-          <div className="flex justify-between">
-            <label>
+          {/* For small screens, display categories in a column, and in a row on larger screens */}
+          <div className="flex flex-col sm:flex-row sm:justify-between space-y-2 sm:space-y-0">
+            <label className="flex items-center">
               <input 
                 type="radio" 
                 value="Entrepreneurship" 
                 checked={category === "Entrepreneurship"} 
                 onChange={() => setCategory("Entrepreneurship")} 
-                className="cursor-pointer"
-              /> Entrepreneurship
+                className="cursor-pointer mr-1"
+              /> 
+              Entrepreneurship
             </label>
-            <label>
+            <label className="flex items-center">
               <input 
                 type="radio" 
                 value="Technology" 
                 checked={category === "Technology"} 
                 onChange={() => setCategory("Technology")} 
-                className="cursor-pointer" 
-              /> Technology
+                className="cursor-pointer mr-1" 
+              /> 
+              Technology
             </label>
-            <label>
+            <label className="flex items-center">
               <input 
                 type="radio" 
                 value="Innovation" 
                 checked={category === "Innovation"} 
                 onChange={() => setCategory("Innovation")} 
-                className="cursor-pointer"
-              /> Innovation
+                className="cursor-pointer mr-1"
+              /> 
+              Innovation
             </label>
           </div>
           {errors.category && <p className="text-red-500">{errors.category}</p>}
@@ -247,7 +251,7 @@ const CreatePost = ({ addPost }) => {
   ];
 
   return (
-    <div className="bg-blue-300 px-10 py-10 rounded-xl mx-auto my-20" style={{ maxWidth: '600px' }}>
+    <div className="bg-blue-300 px-4 sm:px-6 md:px-10 py-10 rounded-xl mx-auto my-20" style={{ maxWidth: '600px' }}>
       <form onSubmit={handleSubmit}>
         <h1 className="text-3xl text-center font-bold text-blue-900">Create Blog</h1>
         <p className="text-center text-blue-900 font-bold mt-2">{currentStep} / {totalSteps}</p>

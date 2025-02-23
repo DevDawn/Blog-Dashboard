@@ -74,7 +74,8 @@ const Comments = ({ blogPostId }) => {
           )}
         </div>
       </div>
-      {/* Comment Creation Section */}
+
+
       <div className="p-6 bg-white rounded-lg shadow-lg border border-blue-300 mb-20">
         <h3 className="text-2xl font-bold mb-6 text-blue-700 py-2 rounded text-center">
           Leave a Comment
