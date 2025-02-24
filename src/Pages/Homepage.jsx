@@ -35,7 +35,7 @@ const Homepage = ({ blogData }) => {
           </Link>
         ))
       ) : (
-        <div className="flex h-screen w-full justify-center items-center">No blog post...</div>
+        <div className="flex h-screen w-full justify-center items-center">Loading...</div>
       )}
     </div>
   );

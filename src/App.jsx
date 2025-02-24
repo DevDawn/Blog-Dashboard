@@ -10,7 +10,6 @@ import { supabase } from './supabaseClient';
 const App = () => {
   const [blogData, setBlogData] = useState([]);
 
-  // Fetch blog posts from Supabase on mount
   useEffect(() => {
     async function loadBlogPosts() {
       const { data, error } = await supabase
@@ -25,17 +24,16 @@ const App = () => {
     loadBlogPosts();
   }, []);
 
-  // Function to add a new blog post via Supabase
   const addPost = async (newPost) => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
         .insert(newPost)
-        .select(); // Add .select() to return inserted rows
+        .select();
       if (error) {
         throw new Error(error.message);
       }
-      // data returns an array of inserted rows, so we take the first one
+      
       setBlogData(prevPosts => [data[0], ...prevPosts]);
     } catch (error) {
       console.error("Error adding post:", error);

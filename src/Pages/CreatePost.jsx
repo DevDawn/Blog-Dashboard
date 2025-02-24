@@ -7,14 +7,14 @@ const CreatePost = ({ addPost }) => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [content, setContent] = useState("");
-  const [date, setDate] = useState("");
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   
   const navigate = useNavigate();
-  const totalSteps = 6;
+  // Total steps is reduced by 1 since "Published Date" is removed.
+  const totalSteps = 5;
 
   // Validate the field for the current step.
   const validateCurrentStep = () => {
@@ -52,12 +52,6 @@ const CreatePost = ({ addPost }) => {
         }
         break;
       case 5:
-        fieldName = "date";
-        if (date.trim() === "") {
-          errorMsg = "Date is required";
-        }
-        break;
-      case 6:
         fieldName = "category";
         if (category === "") {
           errorMsg = "Category is required";
@@ -100,7 +94,8 @@ const CreatePost = ({ addPost }) => {
       title,
       image,
       author: author || "Anonymous",
-      published_date: date,
+      // Automatically set the published_date to the current timestamp
+      published_date: new Date().toISOString(),
       content,
       category,
     };
@@ -122,7 +117,6 @@ const CreatePost = ({ addPost }) => {
       setTitle("");
       setImage("");
       setContent("");
-      setDate("");
       setAuthor("");
       setCategory("");
       setErrors({});
@@ -133,6 +127,7 @@ const CreatePost = ({ addPost }) => {
     }
   };
 
+  // Updated steps without "Published Date"
   const steps = [
     { 
       label: "Title", 
@@ -194,24 +189,9 @@ const CreatePost = ({ addPost }) => {
       )
     },
     { 
-      label: "Published Date", 
-      content: (
-        <>
-          <input 
-            type="date" 
-            className="mt-1 p-2 border border-blue-400 outline-blue-600 rounded w-full"
-            value={date} 
-            onChange={(event) => setDate(event.target.value)}
-          />
-          {errors.date && <p className="text-red-500">{errors.date}</p>}
-        </>
-      )
-    },
-    { 
       label: "Category", 
       content: (
         <>
-          {/* For small screens, display categories in a column, and in a row on larger screens */}
           <div className="flex flex-col sm:flex-row sm:justify-between space-y-2 sm:space-y-0">
             <label className="flex items-center">
               <input 
